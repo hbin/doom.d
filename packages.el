@@ -48,3 +48,13 @@
 ;(unpin! pinned-package another-pinned-package)
 ;; ...Or *all* packages (NOT RECOMMENDED; will likely break things)
 ;(unpin! t)
+
+(package! ace-window)
+
+(package! crux)
+(package! highlight-symbol)
+(package! key-chord)
+(package! smart-shift)
+
+(package! ruby-hash-syntax)
+(package! projectile-rails)

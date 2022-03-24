@@ -39,9 +39,15 @@
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
 (setq display-line-numbers-type t)
 
+;; Display fullscreen after startup.
+;; (add-to-list 'default-frame-alist '(fullscreen . maximized))
+
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
 (setq org-directory "~/org/")
+
+;; Set the default tab-width
+(setq-default tab-width 4)
 
 
 ;; Whenever you reconfigure a package, make sure to wrap your config in an
@@ -75,3 +81,184 @@
 ;;
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
 ;; they are implemented.
+
+
+;;; Doom extentions
+
+(use-package use-package-chords
+  :ensure t
+  :config (key-chord-mode 1))
+
+(use-package use-package-ensure-system-package
+  :ensure t)
+
+(when (string= system-type "darwin")
+  (if (eq mac-command-modifier 'super)
+      (progn
+        (setq mac-command-modifier 'meta)
+        (setq mac-option-modifier 'super))
+    (setq mac-command-modifier 'meta)
+    (setq mac-option-modifier 'super)))
+
+;; My personal backward kill
+(defun +default-backward-kill-word-or-region ()
+  (interactive)
+  (if mark-active
+      (kill-region (region-beginning) (region-end))
+    (doom/delete-backward-word 1)))
+
+;;; Global settings
+
+(bind-key "<f1>" 'help-command)
+
+;; Zen mode ;-p
+(bind-key "M-<return>" 'toggle-frame-fullscreen)
+
+(bind-key "s-0" 'balance-windows)
+(bind-key "M-0" 'delete-window)
+(bind-key "M-1" 'delete-other-windows)
+(bind-key "M-2" 'split-window-vertically)
+(bind-key "M-3" 'split-window-horizontally)
+(bind-key "M-k" 'kill-this-buffer)
+
+(bind-key "C-h" '+default--delete-backward-char-a)
+(bind-key "C-w" '+default-backward-kill-word-or-region)
+(bind-key "M-<backspace>" 'kill-whole-line)
+
+(bind-key "C-/" 'undo-fu-only-undo)
+(bind-key "C-?" 'undo-fu-only-redo)
+
+(bind-key "C-o" '+default/newline-below)
+(bind-key "C-M-o" '+default/newline-above)
+
+(bind-key "M-g" '+default/search-project-for-symbol-at-point)
+
+(bind-key "M-t" 'projectile-find-file)
+(bind-key "M-e" 'projectile-recentf)
+
+(bind-key "C-x \\" 'align-regexp)
+
+(bind-key "M-h" 'er/expand-region)      ; TODO: fix
+
+(bind-key "C-z" nil)
+
+;;; My Toolset
+
+(use-package! ace-window
+  :defer t
+  :commands (ace-window
+             ace-swap-window)
+  :bind (("C-x o" . 'ace-window)
+         ("M-o" . 'other-window)
+         ("M-O" . (lambda () (interactive) (other-window -1)))))
+
+(use-package! crux
+  :commands (crux-with-region-or-line
+             comment-or-uncomment-region
+             crux-top-join-line
+             crux-cleanup-buffer-or-region)
+  :bind (("s-j" .  'crux-top-join-line)
+         ("s-M-l" . 'crux-cleanup-buffer-or-region)
+         ("C-c C-c" . 'comment-or-uncomment-region)))
+(crux-with-region-or-line comment-or-uncomment-region)
+
+(use-package! highlight-symbol
+  :defer t
+  :commands (highlight-symbol
+             highlight-symbol-next
+             highlight-symbol-prev)
+  :init
+  (setq highlight-symbol-colors
+        '("Yellow" "YellowGreen" "pink" "Purple" "PeachPuff" "RoyalBlue" "LightBlue" "SlateBlue" "SteelBlue"
+          "violet" "cyan" "SeaGreen" "#A0522D" "SpringGreen" "LimeGreen" "LightSeaGreen" "MistyRose" "Magenta"
+          "orange" "PaleVioletRed" "#FF6347" "grey" "brown" "RosyBrown" "SandyBrown"))
+  :bind (("M-'" . 'highlight-symbol)
+         ("M-n" . 'highlight-symbol-next)
+         ("M-p" . 'highlight-symbol-prev)))
+
+(use-package! multiple-cursors
+  :defer t
+  :commands (mc/edit-lines
+             mc/mark-all-symbols-like-this
+             mc/mark-next-like-this-symbol
+             mc/mark-previous-like-this-symbol)
+  :bind (("C-S-c C-S-c" . 'mc/edit-lines)
+         ("C-*" . 'mc/mark-all-symbols-like-this)
+         ("C->" . 'mc/mark-next-like-this-symbol)
+         ("C-<" . 'mc/mark-previous-like-this-symbol)))
+
+(use-package! smart-shift
+  :defer t
+  :commands (smart-shift-left
+             smart-shift-right)
+  :bind (("s-[" . 'smart-shift-left)
+         ("s-]" . 'smart-shift-right)))
+
+(use-package! neotree
+  :defer t
+  :custom
+  (neo-banner-message "\" Press ? for help.")
+  (neo-theme 'ascii)                    ; TODO: fix
+  (neo-show-hidden-files nil)
+  :bind (:map neotree-mode-map
+         ("d" . nil)
+         ("D" . neotree-delete-node)
+         ("I" . neotree-hidden-file-toggle))
+  :config
+  (add-to-list 'neo-hidden-regexp-list "TAGS\\|GPATH\\|GRTAGS\\|GTAGS"))
+
+(use-package! company
+  :commands (+company/complete)
+  :init
+  (setq company-idle-delay nil)
+  :bind (("M-/" . +company/complete)
+         :map company-active-map
+         ("C-h" . backward-delete-char)))
+
+;;; Programming Languages
+
+;; (use-package! lsp-mode
+;;   :defer t
+;;   )
+
+(use-package! ruby-mode
+  :ensure-system-package
+  ((rubocop     . "gem install rubocop")
+   (pry         . "gem install pry"))
+  :config
+
+  (setq ruby-insert-encoding-magic-comment nil)
+  (setq rspec-use-spring-when-possible nil)
+
+  (font-lock-add-keywords
+   'ruby-mode
+   '(("\\(\\b\\sw[_a-zA-Z0-9]*:\\)\\(?:\\s-\\|$\\)" (1 font-lock-constant-face))
+     ("\\(^\\|[^_:.@$\\W]\\|\\.\\.\\)\\b\\(include\\|extend\\|require\\|autoload\\)\\b[^_:.@$\\W]" . font-lock-function-name-face)))
+
+  (defun hbin-ruby-mode-hook ()
+    (setq-local whitespace-line-column 120)
+
+    (modify-syntax-entry ?$ "w")   ; Words prefixed with $ are global variables,
+    (modify-syntax-entry ?@ "w"))  ; prefixed with @ are instance variables.
+  (add-hook 'ruby-mode-hook 'hbin-ruby-mode-hook))
+
+(use-package! ruby-hash-syntax
+  :defer t
+  :requires ruby-mode
+  :commands (ruby-toggle-hash-syntax)
+  :bind (:map ruby-mode-map
+         ("C-c #" . 'ruby-toggle-hash-syntax)))
+
+(use-package! projectile-rails
+  :defer t
+  :requires (projectile ruby-mode)
+  :custom
+  (projectile-rails-expand-snippet nil)
+  (projectile-rails-keymap-prefix (kbd "C-c ;"))
+  (projectile-rails-font-lock-face-name 'font-lock-function-name-face)
+
+  :bind (("s-<return>". 'projectile-rails-goto-file-at-point)
+         ("C-c ; r" . 'projectile-rails-find-spec)
+         ("C-c ; R" . 'projectile-rails-find-current-spec)
+         ("C-c ; p" . 'projectile-rails-console)
+         ("C-c ; P" . 'projectile-rails-server)))
