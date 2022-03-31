@@ -154,13 +154,14 @@
 
 (use-package! crux
   :commands (crux-with-region-or-line
-             comment-or-uncomment-region
              crux-top-join-line
              crux-cleanup-buffer-or-region)
   :bind (("s-j" .  'crux-top-join-line)
-         ("s-M-l" . 'crux-cleanup-buffer-or-region)
-         ("C-c C-c" . 'comment-or-uncomment-region)))
-(crux-with-region-or-line comment-or-uncomment-region)
+         ("s-M-l" . 'crux-cleanup-buffer-or-region)))
+
+(use-package! evil
+  :bind (("M-[" . evil-jump-backward)
+         ("M-]" . evil-jump-forward)))
 
 (use-package! highlight-symbol
   :defer t
