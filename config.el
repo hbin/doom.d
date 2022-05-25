@@ -222,6 +222,8 @@
 ;;   :defer t
 ;;   )
 
+;;; Ruby Programming Language
+
 (use-package! ruby-mode
   :ensure-system-package
   ((rubocop     . "gem install rubocop")
@@ -263,3 +265,14 @@
          ("C-c ; R" . 'projectile-rails-find-current-spec)
          ("C-c ; p" . 'projectile-rails-console)
          ("C-c ; P" . 'projectile-rails-server)))
+
+;;; Go Programming Language
+
+(use-package! go-playground
+  :defer t)
+
+;;; Others
+
+(use-package! dockerfile-mode
+  :defer t
+  :mode (("Dockerfile\\'" . dockerfile-mode)))
