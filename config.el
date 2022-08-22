@@ -86,11 +86,9 @@
 ;;; Doom extentions
 
 (use-package use-package-chords
-  :ensure t
   :config (key-chord-mode 1))
 
-(use-package use-package-ensure-system-package
-  :ensure t)
+(use-package use-package-ensure-system-package)
 
 (when (string= system-type "darwin")
   (if (eq mac-command-modifier 'super)
