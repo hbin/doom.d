@@ -138,7 +138,7 @@
 
 (bind-key "C-x \\" 'align-regexp)
 
-(bind-key "M-h" 'er/expand-region)      ; TODO: fix
+(bind-key "M-h" 'er/expand-region)
 
 (bind-key "C-z" nil)
 
@@ -156,6 +156,10 @@
   :commands (crux-with-region-or-line
              crux-top-join-line
              crux-cleanup-buffer-or-region)
+  :config
+  (crux-with-region-or-buffer indent-region)
+  (crux-with-region-or-buffer untabify)
+
   :bind (("s-j" .  'crux-top-join-line)
          ("s-M-l" . 'crux-cleanup-buffer-or-region)))
 
