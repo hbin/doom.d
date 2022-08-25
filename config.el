@@ -28,7 +28,7 @@
 ;; up, `M-x eval-region' to execute elisp code, and 'M-x doom/reload-font' to
 ;; refresh your font settings. If Emacs still can't find your font, it likely
 ;; wasn't installed correctly. Font issues are rarely Doom issues!
-(setq doom-font (font-spec :family "Monaco" :size 20))
+(setq doom-font (font-spec :family "Monaco" :size 18))
 
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
@@ -49,6 +49,8 @@
 ;; Set the default tab-width
 (setq-default tab-width 4)
 
+;; Fullscreen
+(add-to-list 'default-frame-alist '(fullscreen . maximized))
 
 ;; Whenever you reconfigure a package, make sure to wrap your config in an
 ;; `after!' block, otherwise Doom's defaults may override your settings. E.g.
@@ -227,7 +229,6 @@
   ((rubocop     . "gem install rubocop")
    (pry         . "gem install pry"))
   :config
-
   (setq ruby-insert-encoding-magic-comment nil)
   (setq rspec-use-spring-when-possible nil)
 
