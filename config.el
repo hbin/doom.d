@@ -212,6 +212,10 @@
   :config
   (add-to-list 'neo-hidden-regexp-list "TAGS\\|GPATH\\|GRTAGS\\|GTAGS"))
 
+(use-package! vertico
+  :commands (vertico-repeat)
+  :bind (("M-z" . 'vertico-repeat)))
+
 (use-package! company
   :commands (+company/complete)
   :init
