@@ -87,10 +87,8 @@
 
 ;;; Doom extentions
 
-(use-package use-package-chords
+(use-package key-chord
   :config (key-chord-mode 1))
-
-(use-package use-package-ensure-system-package)
 
 (when (string= system-type "darwin")
   (if (eq mac-command-modifier 'super)
@@ -233,9 +231,6 @@
 ;;; Ruby Programming Language
 
 (use-package! ruby-mode
-  :ensure-system-package
-  ((rubocop     . "gem install rubocop")
-   (pry         . "gem install pry"))
   :config
   (setq ruby-insert-encoding-magic-comment nil)
   (setq rspec-use-spring-when-possible nil)
